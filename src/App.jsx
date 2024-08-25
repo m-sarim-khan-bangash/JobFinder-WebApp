@@ -4,6 +4,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
+
 import React from "react";
 import MainLayout from "./layouts/MainLayout";
 import HomePage from "./pages/HomePage";
@@ -14,38 +15,14 @@ import AddJobPage from "./pages/AddJobPage";
 import EditJobPage from "./pages/EditJobPage";
 
 const App = () => {
-  // Add a new job
-  const addJob = async (newJob) => {
-    const res = await fetch("http://localhost:8000/jobs", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newJob),
-    });
-    return;
-    // console.log(newJob);
-  };
-
-  // Delete a job
-  const deleteJob = async (id) => {
-    const res = await fetch(`http://localhost:8000/jobs/${id}`, {
-      method: "DELETE",
-    });
-    return;
-  };
-
-  // Edit a Job
-  
-
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
         <Route path="/jobs" element={<JobsPage />} />
-        <Route path="/add-job" element={<AddJobPage addJobSubmit={addJob} />} />
-        <Route path="/jobs/:id" element={<JobPage deleteJob={deleteJob} />} />
-        <Route path="/edit-job/:id" element={<EditJobPage />}/>
+        <Route path="/add-job" element={<AddJobPage />} />
+        <Route path="/jobs/:id" element={<JobPage />} />
+        <Route path="/edit-job/:id" element={<EditJobPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     )

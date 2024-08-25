@@ -4,8 +4,7 @@ import { FaArrowLeft, FaMapMarker } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-
-const JobPage = ({ deleteJob }) => {
+const JobPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [job, setJob] = useState(null);
@@ -14,26 +13,38 @@ const JobPage = ({ deleteJob }) => {
   const onDeleteClick = async (id) => {
     const confirm = window.confirm("Are you sure you want to delete this job?");
     if (confirm) {
-      deleteJob(id);
-      toast.success("Job deleted successfully");
-      navigate("/jobs");
+      try {
+        const res = await fetch(`http://localhost:8000/jobs/${id}`, {
+          method: "DELETE",
+        });
+  
+        if (res.ok) { 
+          toast.success("Job deleted successfully");
+          navigate("/jobs");
+        } else {
+          toast.error("Failed to delete the job");
+        }
+      } catch (error) {
+        console.error("Error deleting job:", error);
+        toast.error("An error occurred while deleting the job");
+      }
     }
-    
+  };
+
+  const fetchJob = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/jobs/${id}`);
+      const data = await response.json();
+      setJob(data);
+      setLoading(false);
+    } catch {
+      console.log("Error fetching data", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchJob = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/jobs/${id}`);
-        const data = await response.json();
-        setJob(data);
-        setLoading(false);
-      } catch {
-        console.log("Error fetching data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchJob();
   }, []);
 

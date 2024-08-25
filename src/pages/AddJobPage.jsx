@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const AddJobPage = ({ addJobSubmit }) => {
+const AddJobPage = () => {
   const [title, setTitle] = useState("");
   const [type, setType] = useState("Full-Time");
   const [location, setLocation] = useState("");
@@ -15,10 +15,10 @@ const AddJobPage = ({ addJobSubmit }) => {
 
   const navigate = useNavigate();
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
-
-    const newJob = {
+  
+    const payload = {
       title,
       type,
       location,
@@ -31,13 +31,28 @@ const AddJobPage = ({ addJobSubmit }) => {
         contactPhone,
       },
     };
-    console.log(newJob);
-    addJobSubmit(newJob);
-    toast.success("Job added successfully");
-    
-    return navigate("/jobs");
+  
+    try {
+      const response = await fetch("http://localhost:8000/jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (response.ok) { 
+        toast.success("Job added successfully");
+        navigate("/jobs");
+      } else {
+        toast.error("Failed to add the job");
+      }
+    } catch (error) {
+      console.error("Error adding job:", error);
+      toast.error("An error occurred while adding the job");
+    }
   };
-
+  
   return (
     <>
       <section className="bg-indigo-50">
