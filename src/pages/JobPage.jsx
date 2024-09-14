@@ -9,16 +9,17 @@ const JobPage = () => {
   const { id } = useParams();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   const onDeleteClick = async (id) => {
     const confirm = window.confirm("Are you sure you want to delete this job?");
+
     if (confirm) {
       try {
         const res = await fetch(`http://localhost:8000/jobs/${id}`, {
           method: "DELETE",
         });
-  
-        if (res.ok) { 
+
+        if (res.ok) {
           toast.success("Job deleted successfully");
           navigate("/jobs");
         } else {
